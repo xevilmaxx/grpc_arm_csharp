@@ -8,7 +8,8 @@
 
 **https://github.com/erikest/libgrpc_csharp_ext**
 
-
+# You can use already compiled files (which should be Linux SO agnostic)
+# or
 # Build your own C# ext files for GRPC
 
 ## Install necessary deps for building
