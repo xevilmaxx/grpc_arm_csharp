@@ -1,2 +1,3 @@
 # Compiled on Raspberry PI 3B+
-# OS: Raspbian PI
+# OS: Raspbian Linux
+# Tested On: Raspbian
