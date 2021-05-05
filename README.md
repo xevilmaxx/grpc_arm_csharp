@@ -8,13 +8,13 @@
 
 **https://github.com/erikest/libgrpc_csharp_ext**
 
-# You can use already compiled files (which should be Linux SO agnostic)
+# You can use already compiled files (which should be Linux OS agnostic)
 # or
 # Build your own C# ext files for GRPC
 
 ## Install necessary deps for building
 
-### Debian based SO (Ubuntu/Debian/LinuxMint/...)
+### Debian based OS (Ubuntu/Debian/LinuxMint/...)
 ```bash
 ###
 #Install Tool Chain
