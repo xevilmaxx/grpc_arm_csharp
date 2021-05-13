@@ -1,37 +1,93 @@
-## Welcome to GitHub Pages
+# C# GRPC extensions for Linux
 
-You can use the [editor on GitHub](https://github.com/xevilmaxx/grpc_arm_csharp/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+- [x] Arm32 [armhf]
+- [x] Arm64 [aarch64]
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+**Original Idea**
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+**https://github.com/erikest/libgrpc_csharp_ext**
 
-```markdown
-Syntax highlighted code block
+# You can use already compiled files (which should be Linux OS agnostic)
+# or
+# Build your own C# ext files for GRPC
 
-# Header 1
-## Header 2
-### Header 3
+## Install necessary deps for building
 
-- Bulleted
-- List
+### Debian based OS (Ubuntu/Debian/LinuxMint/...)
+```bash
+###
+#Install Tool Chain
+###
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+sudo apt-get install build-essential autoconf libtool pkg-config
+sudo apt-get install libgflags-dev libgtest-dev
+sudo apt-get install clang libc++-dev
+sudo apt-get install cmake
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-### Jekyll Themes
+### Arch based SO (Arch/Manjaro/...)
+```bash
+###
+#Install Tool Chain
+###
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/xevilmaxx/grpc_arm_csharp/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+sudo pacman -S build-essential autoconf libtool pkg-config base-devel
+sudo pacman -S clang cmake go
+```
 
-### Support or Contact
+### Lets clone from GitHub and build
+**Replace: --branch v1.27.x with branch you actually need**
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+```bash
+#!/bin/bash
+
+###
+#Get gRPC Source Code
+###
+
+git clone https://github.com/grpc/grpc.git --branch v1.27.x
+cd grpc
+git submodule update --init
+
+###
+#Compile libgrpc_csharp_ext target
+###
+
+#create location for build files
+mkdir -p cmake/build
+cd cmake/build
+
+#setup the build files
+cmake -DgRPC_BUILD_TESTS=OFF -DCMAKE_BUILD_TYPE="${MSBUILD_CONFIG}" ../..
+
+#compile libgrpc_csharp_ext.so 
+make -j4 grpc_csharp_ext
+```
+
+### Finally copy generated ext to some directory
+**In this case it will copy generated file to directory where you cloned grpc from github**
+
+```bash
+#Copy the file back to repository root and rename it to what gRPC.Core currently looks for
+cp libgrpc_csharp_ext.so ../../../libgrpc_csharp_ext.x64.so
+```
+
+# Notes
+**WARNING: GRPC dont support officially arm32, but compiled .so for armhf should work anyway on specific versions of GRPC**
+
+# LinuxArm64 (aarch64)
+## Published NetCore app as self-contained -> linux-arm64
+### Rename generated .so into -> libgrpc_csharp_ext.x64.so
+
+## Published NetCore app as framework-dependant -> linux-arm64
+### Rename generated .so into -> libgrpc_csharp_ext.arm64.so
+
+# LinuxArm32 (armhf)
+
+## Published NetCore app as self-contained -> linux-arm
+### Rename generated .so into -> libgrpc_csharp_ext.x86.so
+
+## Published NetCore app as framework-dependant -> linux-arm
+### Rename generated .so into -> libgrpc_csharp_ext.arm.so
